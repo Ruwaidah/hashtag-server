@@ -17,6 +17,9 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log(socket.id);
+  socket.on("userjoint", (data) => {
+    console.log("wfwefwe",data);
+  });
 });
 
 app.get("/", (req, res) => {
