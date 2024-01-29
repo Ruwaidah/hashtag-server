@@ -11,15 +11,19 @@ const PORT = process.env.PORT;
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.URL,
   },
 });
 
+const UserState = {
+  users: [],
+  setUsers: function (newUsersArray) {
+    this.users = newUsersArray;
+  },
+};
 io.on("connection", (socket) => {
   console.log(socket.id);
-  socket.on("userjoint", (data) => {
-    console.log("wfwefwe",data);
-  });
+  socket.on("userjoinroom", ({ name, room }) => {});
 });
 
 app.get("/", (req, res) => {
@@ -28,24 +32,11 @@ app.get("/", (req, res) => {
 server.listen(PORT, () => {
   console.log(`listening to port ${PORT}`);
 });
-// import { createServer } from "http";
-// import { Server } from "socket.io";
-// const httpServer = createServer();
-// const io = new Server(httpServer, {
-//   cors: {
-//     origin:
-//       process.env.NODE_ENV === "production" ? false : ["http://localhost:5500"],
-//   },
-// });
 
-// io.on("connection", (socket) => {
-//   console.log(`user ${socket.id} connected`);
-//   socket.on("message", (data) => {
-//     console.log(data);
-//     io.emit("message", `${socket.id.substring(0.5)} :  ${data}`);
-//   });
-// });
-
-// httpServer.listen(4000, () => {
-//   console.log("listening on port 4000");
-// });
+const userActivity = (id, name, room) => {
+  const user = { id, name, room };
+  UserState.setUsers([
+    ...UserState.users.filter((user) => user.id !== id),
+    user,
+  ]);
+};
